@@ -1,0 +1,54 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>about — 灯輪 v5 deep sea</title>
+<style>
+  :root{--bg:#0b1220;--panel:#0a142c;--ink:#e8eefc;--muted:#9fb0d8;--accent:#2c4fb2;--line:#27407a;--chip:#0d1b36;--chipline:#223b6b}
+  *,*::before,*::after{box-sizing:border-box}
+  html, body { -webkit-text-size-adjust: 100%; }
+  body{ margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN",Meiryo,"Noto Sans JP",sans-serif;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;}
+  header{ position:sticky;top:0;z-index:20;padding:12px 14px;background:#0e1730;border-bottom:1px solid #24304d;
+    display:flex;gap:12px;align-items:center;flex-wrap:wrap; contain:layout paint; }
+  h1{margin:0;font-size:16px;letter-spacing:.02em;flex:1}
+  nav a{color:#cfe3ff;text-decoration:none;padding:8px 10px;border-radius:8px;border:1px solid #223b6b;background:#0d1b36;margin-right:8px}
+  nav a[aria-current="page"]{outline:2px solid #2c4fb2}
+  main{padding:16px;max-width:980px;margin:0 auto;display:grid;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px; position:relative}
+  .muted{color:var(--muted);font-size:12px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .chip{display:inline-flex;gap:6px;background:#0d1b36;border:1px solid #223b6b;border-radius:999px;padding:6px 10px;font-size:12px;color:#cfe3ff}
+  pre{white-space:pre-wrap;background:#08102a;border:1px solid #233a70;border-radius:12px;padding:10px;margin:10px 0}
+</style>
+<header>
+  <h1>about — 灯輪 v5 deep sea</h1>
+  <nav>
+    <a href="index.html">app</a>
+    <a href="about.html" aria-current="page">about</a>
+    <a href="privacy.html">privacy</a>
+    <a href="changelog.html">changelog</a>
+  </nav>
+</header>
+<main>
+  <section class="card">
+    <h2>概要</h2>
+    <p>このアプリは、入力テキストから CUS / RIS / EIS / SSS を推定し、旧FAS指標群と統合して FAS_composite を算出します。処理はすべてブラウザ内（ローカル）で完結します。</p>
+    <ul>
+      <li><b>CUS</b>: 落ち着き・自己理解・問題解決の語と一貫性</li>
+      <li><b>RIS</b>: 対処・自己効力・過去の成功・支援・成長</li>
+      <li><b>EIS</b>: 交流性（呼びかけ・質問・話題維持など）</li>
+      <li><b>SSS</b>: 生活リズム・予定・主体性・外出/交流</li>
+    </ul>
+    <p>FASは α=0.83 の平滑化を用い、危機語・夜間（JST 0–4時）の補正を持ちます。</p>
+  </section>
+  <section class="card">
+    <h2>モード（日本語名）</h2>
+    <p>FAS×CUSマップから、緊急〜安定までの12モードを表示します（例：緊急の炎／再び灯る火／歩く火 など）。</p>
+  </section>
+  <section class="card">
+    <h2>免責と支援</h2>
+    <p>本アプリは医療的判断を行いません。必要に応じて、身近な人・学校の相談窓口・地域の相談サービスをご利用ください。</p>
+  </section>
+</main>
