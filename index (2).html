@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hinowa Infinity — 外部辞書読込デモ (Step 4)</title>
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#0f1a36; --ink:#e8eefc; --muted:#9fb0d8; --accent:#5fd1ff;
+      --ok:#52c41a; --warn:#faad14; --crit:#ff4d4f; --low:#1890ff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b1220,#0d1a33);color:var(--ink);
+         font-family:system-ui,-apple-system,Segoe UI,Roboto,'Hiragino Kaku Gothic ProN',Meiryo,'Noto Sans JP',sans-serif}
+    header{padding:12px 16px;border-bottom:1px solid #22325d;background:#0d162c;position:sticky;top:0;z-index:10}
+    h1{margin:0;font-size:16px;letter-spacing:.02em}
+    main{max-width:960px;margin:0 auto;padding:14px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .card{flex:1 1 320px;background:#0a142c;border:1px solid #27407a;border-radius:12px;padding:12px;min-width:280px}
+    textarea{width:100%;min-height:160px;background:#0a142c;color:var(--ink);border:1px solid #27407a;border-radius:10px;padding:10px}
+    button{background:#2c4fb2;color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer}
+    button[disabled]{opacity:.5;cursor:not-allowed}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .muted{color:var(--muted);font-size:12px}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+    pre{white-space:pre-wrap;background:#08102a;border:1px solid #233a70;border-radius:10px;padding:10px;margin:8px 0;max-height:260px;overflow:auto}
+    .badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;background:#142449;border:1px solid #27407a;font-size:12px}
+    .status{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+    .pill{display:inline-block;border-radius:999px;padding:2px 8px;font-size:12px;border:1px solid #27407a}
+    .pill.low{background:rgba(24,144,255,.15);color:#e6f7ff;border-color:#1890ff}
+    .pill.medium{background:rgba(82,196,26,.15);color:#f6ffed;border-color:#52c41a}
+    .pill.high{background:rgba(250,173,20,.15);color:#fffbe6;border-color:#faad14}
+    .pill.critical{background:rgba(255,77,79,.15);color:#fff1f0;border-color:#ff4d4f}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .hidden{display:none}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .crit{color:var(--crit)}
+    footer{padding:24px 12px;color:var(--muted);text-align:center}
+  </style>
+</head>
+<body>
+<header><h1>Hinowa Infinity — 外部辞書読込デモ (Step 4)</h1></header>
+<main>
+  <section class="card">
+    <div class="status">
+      <span class="badge">辞書ロード状態: <span id="dictStatus">idle</span></span>
+      <span class="badge">テンプレ状態: <span id="tmplStatus">idle</span></span>
+      <span class="badge">モード設定: <span id="modeStatus">idle</span></span>
+    </div>
+    <div class="btns">
+      <button id="btnLoad">外部JSONを読み込む</button>
+      <button id="btnDemo">デモ入力</button>
+      <button id="btnRun" disabled>計算</button>
+      <button id="btnReset" style="background:#20345f">リセット</button>
+      <label class="badge">
+        手動読込:
+        <input type="file" id="fileInput" multiple accept=".json" />
+      </label>
+    </div>
+    <div class="muted">ヒント：ローカルfile://ではfetchが失敗する場合があります。公開URL（例：GitHub Pages）経由で開くか、手動読込をご利用ください。</div>
+  </section>
+
+  <section class="row">
+    <div class="card" style="flex:2 1 480px">
+      <div class="muted">入力テキスト</div>
+      <textarea id="txt"></textarea>
+    </div>
+    <div class="card" style="flex:1 1 320px">
+      <div class="muted">結果</div>
+      <div>FAS: <span id="fas" class="mono">-</span> <span id="fasZone" class="pill">-</span></div>
+      <div style="margin-top:8px">要約</div>
+      <pre id="summary">(ここに要約が表示されます)</pre>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <div class="muted">辞書プレビュー</div>
+      <pre id="dictPreview" class="mono"></pre>
+    </div>
+    <div class="card">
+      <div class="muted">テンプレプレビュー</div>
+      <pre id="tmplPreview" class="mono"></pre>
+    </div>
+    <div class="card">
+      <div class="muted">モード設定</div>
+      <pre id="modePreview" class="mono"></pre>
+    </div>
+  </section>
+</main>
+<footer>ローカルのみで計算／外部送信なし — © Hinowa Infinity</footer>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+
+  // ---- State ----
+  const state = {
+    dict: null,
+    tmpl: null,
+    mode: null,
+  };
+
+  const setBadge = (id, text) => { $(id).textContent = text; };
+
+  const showJSON = (el, obj) => el.textContent = obj ? JSON.stringify(obj, null, 2) : "(未読込)";
+  const clamp = (x, a=0, b=1) => Math.max(a, Math.min(b, x));
+  const round3 = (x) => (Math.round(x*1000)/1000).toFixed(3);
+
+  // ---- External Loaders ----
+  async function loadExternal() {
+    try {
+      setBadge("dictStatus", "loading...");
+      setBadge("tmplStatus", "loading...");
+      setBadge("modeStatus", "loading...");
+      const [d, t, m] = await Promise.all([
+        fetch("./data/emotion_keywords.json").then(r => r.json()),
+        fetch("./data/summary_templates.json").then(r => r.json()),
+        fetch("./data/mode_config.json").then(r => r.json()),
+      ]);
+      state.dict = d; state.tmpl = t; state.mode = m;
+      setBadge("dictStatus", "ready");
+      setBadge("tmplStatus", "ready");
+      setBadge("modeStatus", "ready");
+      $("btnRun").disabled = false;
+
+      showJSON($("dictPreview"), {version: d.version, clusters: d.clusters.slice(0,3)});
+      showJSON($("tmplPreview"), {version: t.version, keys: Object.keys(t)});
+      showJSON($("modePreview"), m);
+    } catch (e) {
+      console.error(e);
+      setBadge("dictStatus", "error");
+      setBadge("tmplStatus", "error");
+      setBadge("modeStatus", "error");
+      alert("外部JSONの読み込みに失敗しました。公開URLで開くか、手動読込をご利用ください。");
+    }
+  }
+
+  // Manual loader via <input type=file>
+  $("fileInput").addEventListener("change", async (ev) => {
+    const files = [...ev.target.files];
+    const map = {};
+    for (const f of files) {
+      const text = await f.text();
+      try {
+        map[f.name] = JSON.parse(text);
+      } catch {
+        alert(f.name + " はJSONとして読み込めませんでした。");
+      }
+    }
+    // Simple name-based assignment
+    if (map["emotion_keywords.json"]) { state.dict = map["emotion_keywords.json"]; setBadge("dictStatus","ready*"); showJSON($("dictPreview"), {version: state.dict.version, clusters: state.dict.clusters?.slice(0,3)}); }
+    if (map["summary_templates.json"]) { state.tmpl = map["summary_templates.json"]; setBadge("tmplStatus","ready*"); showJSON($("tmplPreview"), {version: state.tmpl.version, keys: Object.keys(state.tmpl)}); }
+    if (map["mode_config.json"]) { state.mode = map["mode_config.json"]; setBadge("modeStatus","ready*"); showJSON($("modePreview"), state.mode); }
+    $("btnRun").disabled = !(state.dict && state.tmpl && state.mode);
+  });
+
+  // ---- Minimal Scoring using external dict ----
+  function scoreEmotion(text) {
+    if (!state.dict) return 0;
+    const norm = (text||"").replace(/\s+/g,' ').trim();
+    let score = 0;
+    let hits = 0;
+    for (const cl of state.dict.clusters || []) {
+      const w = cl.weight || 0;
+      for (const term of cl.entries || []) {
+        const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+        const m = norm.match(re);
+        if (m) {
+          hits += m.length;
+          score += w * m.length;
+        }
+      }
+    }
+    // Normalize: more hits -> stronger, cap by tanh-like
+    const ed = clamp(Math.tanh((score) / 2));
+    return ed;
+  }
+
+  function calculateFASCore(text) {
+    const ED = scoreEmotion(text);         // external dict driven
+    const BD = clamp((text.match(/[!！?？]{2,}|…|\.\.\.|ー{2,}|。{2,}/g)||[]).length / 5); // rough
+    const ST = 0.5; // placeholder
+    const RT = 0.2; // placeholder (rise trend would need history)
+    const DT = 0.2; // placeholder (delta temp)
+    const SC = 0.2; // placeholder
+    const SD = 0.2; // placeholder
+    const AV = clamp((text.match(/[!！?？]/g)||[]).length / 10);
+    const LE = clamp(new Set((text||'').split(/[^\p{L}\p{N}]+/u)).size / 100);
+    const TC = 0.3;
+    const PF = /震える|動悸|吐き気|めまい/.test(text) ? 1 : 0;
+    const ECW = 0.2;
+
+    const weights = {
+      EmotionDensity: 0.20, BreakdownDepth: 0.12, SilenceTrend: 0.10, RiseTrend: 0.08, DeltaTemp: 0.06,
+      SimilarityChange: 0.05, SemanticDrift: 0.05, ArousalVariance: 0.05, LinguisticEnergy: 0.04,
+      TemporalCompression: 0.03, PhysioFlag: 0.02, ExternalContextWeight: 0.02,
+      invCUS: 0.08, invRIS: 0.05, invEIS: 0.03, invSSS: 0.02
+    };
+    const metrics = {
+      EmotionDensity: ED, BreakdownDepth: BD, SilenceTrend: ST, RiseTrend: RT, DeltaTemp: DT,
+      SimilarityChange: SC, SemanticDrift: SD, ArousalVariance: AV, LinguisticEnergy: LE,
+      TemporalCompression: TC, PhysioFlag: PF, ExternalContextWeight: ECW,
+      invCUS: 0.5, invRIS: 0.5, invEIS: 0.5, invSSS: 0.5
+    };
+    let fas = 0;
+    for (const [k,w] of Object.entries(weights)) fas += (metrics[k]||0)*w;
+    return clamp(fas);
+  }
+
+  function zoneFromFAS(fas) {
+    const th = state.mode?.thresholds || {critical:0.85, high:0.68, medium:0.50};
+    if (fas >= th.critical) return "critical";
+    if (fas >= th.high) return "high";
+    if (fas >= th.medium) return "medium";
+    return "low";
+  }
+
+  function summarize(fas, text) {
+    const z = zoneFromFAS(fas);
+    const t = state.tmpl || {};
+    const pool = t[z] || ["状態に応じた要約を準備中です。"];
+    const pick = pool[Math.floor(Math.random()*pool.length)];
+    return `[${z.toUpperCase()}] ${pick}`;
+  }
+
+  function renderFAS(fas) {
+    $("fas").textContent = round3(fas);
+    const z = zoneFromFAS(fas);
+    const pill = $("fasZone");
+    pill.textContent = z;
+    pill.className = "pill " + z;
+  }
+
+  // ---- Events ----
+  $("btnLoad").addEventListener("click", loadExternal);
+  $("btnDemo").addEventListener("click", () => {
+    $("txt").value = "もう無理。助けて助けて。胸がざわざわして、手が震える。";
+  });
+  $("btnRun").addEventListener("click", () => {
+    const txt = $("txt").value || "";
+    if (!txt.trim()) {
+      $("fas").textContent = "-"; $("fasZone").textContent="-"; $("summary").textContent=""; return;
+    }
+    const fas = calculateFASCore(txt);
+    renderFAS(fas);
+    $("summary").textContent = summarize(fas, txt);
+  });
+  $("btnReset").addEventListener("click", () => {
+    $("txt").value = ""; $("fas").textContent = "-"; $("fasZone").textContent="-"; $("summary").textContent="";
+  });
+
+})();</script>
+</body>
+</html>
