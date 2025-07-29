@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1220">
+<title>灯輪 v5 deep sea — Tomoshibi v5 Fusion PRO — DynamicTemplates v4.0 — 2025-07-29 00:46:16</title>
+<style>
+  :root{--bg:#0b1220;--panel:#0a142c;--ink:#e8eefc;--muted:#9fb0d8;--accent:#2c4fb2;--line:#27407a;--chip:#0d1b36}
+  *,*::before,*::after{box-sizing:border-box}
+  html, body { -webkit-text-size-adjust: 100%; }
+  body{ margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN",Meiryo,"Noto Sans JP",sans-serif;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;}
+  header{ position:sticky;top:0;z-index:20;padding:12px 14px;background:#0e1730;border-bottom:1px solid #24304d;
+    display:flex;gap:12px;align-items:center;flex-wrap:wrap; contain:layout paint; }
+  h1{margin:0;font-size:16px;letter-spacing:.02em;flex:1}
+  nav a{color:#cfe3ff;text-decoration:none;padding:8px 10px;border-radius:8px;border:1px solid #223b6b;background:#0d1b36;margin-right:8px}
+  nav a[aria-current="page"]{outline:2px solid #2c4fb2}
+  main{padding:16px;max-width:980px;margin:0 auto;display:grid;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px; position:relative}
+  .muted{color:var(--muted);font-size:12px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .chip{display:inline-flex;gap:6px;background:#0d1b36;border:1px solid #223b6b;border-radius:999px;padding:6px 10px;font-size:12px;color:#cfe3ff}
+  pre{white-space:pre-wrap;background:#08102a;border:1px solid #233a70;border-radius:12px;padding:10px;margin:10px 0}
+  textarea{ width:100%;min-height:300px;background:#0a142c;color:var(--ink);
+    border:1px solid var(--line);border-radius:12px;padding:12px;
+    font-size:17px;line-height:1.7;resize:vertical;touch-action: manipulation;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center; margin-top:10px}
+  button{ background:var(--accent);color:#fff;border:none;padding:14px 16px;border-radius:12px;cursor:pointer;
+    font-size:17px;min-height:48px;touch-action: manipulation;-webkit-user-select:none;user-select:none; }
+  button.s{background:#20345f}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  .summary{background:#0c1530;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:8px;line-height:1.9;min-height:140px}
+  #err{color:#ff9d9d;margin-top:6px;min-height:1.2em;white-space:pre-wrap}
+  @media (max-width: 820px){
+    main{padding:12px;max-width: 720px}
+    textarea{min-height:320px}
+    .row > button{flex:1}
+  }
+</style>
+</head>
+<body>
+<header aria-live="polite">
+  <h1>灯輪 v5 deep sea — Tomoshibi v5 Fusion PRO — DynamicTemplates v4.0 — 2025-07-29 00:46:16</h1>
+  <nav>
+    <a href="index.html" aria-current="page">app</a>
+    <a href="about.html">about</a>
+    <a href="privacy.html">privacy</a>
+    <a href="changelog.html">changelog</a>
+  </nav>
+  <span class="chip" aria-label="JavaScriptインジケータ"><span id="jsDot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#888"></span>&nbsp;JS</span>
+  <span class="chip" aria-label="RUNインジケータ"><span id="runDot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#888"></span>&nbsp;RUN</span>
+</header>
+
+<div id="jsWarning" style="background:#2d1a1a;color:#ffd5d5;border:1px solid #5a2a2a;border-radius:12px;margin:12px;padding:12px;line-height:1.6">
+  <b>⚠️ JavaScriptが動いていません。</b> iPhoneの「ファイルのプレビュー」ではJSが止まります。公開URLで開くか、Safari/Chromeのアドレスバーに直接URLを入れてください。
+</div>
+
+<main>
+  <section class="card">
+    <div id="err" class="muted" role="status"></div>
+    <div class="muted">テキストを貼り付けて「計算」。空にすると自動リセット。</div>
+    <textarea id="t" placeholder="例：もう無理もう無理…助けて。／ 朝に散歩して深呼吸、少し落ち着いた。"></textarea>
+    <div class="row">
+      <button id="btnDemo" type="button" onclick="demo()">デモ</button>
+      <button id="btnRun"  type="button" onclick="run()">計算</button>
+      <button id="btnClear"type="button" class="s" onclick="clearAll()">消去</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="chips">
+      <div class="chip" id="modeChip">モード: —</div>
+      <div class="chip" id="scoreChip">FAS: — / CUS: —</div>
+    </div>
+    <div class="muted">JSON（灯輪 v5 deep sea 準拠）</div>
+    <pre id="json">{ }</pre>
+    <div class="muted">人向け要約</div>
+    <div class="summary" id="sum">（ここに要約が表示されます）</div>
+    <div class="muted">ローカルのみで計算／外部送信なし</div>
+  </section>
+</main>
+
+<script>
+(function(){ try{ document.getElementById('jsDot').style.background = '#35d07f'; }catch(_e){} try{ document.getElementById('jsWarning').style.display='none'; }catch(_e){} })();
+function setRun(color){ try{ document.getElementById('runDot').style.background = color; }catch(_e){} }
+function log(msg){ var el=document.getElementById('err'); if(!el) return; el.textContent=(el.textContent?el.textContent+'\n':'')+String(msg); }
+function hashText(s){ s=String(s||''); var h=5381; for(var i=0;i<s.length;i++){ h=((h<<5)+h)+s.charCodeAt(i); h|=0; } return String(h>>>0); }
+function r3(x){ return Math.round(x*1000)/1000; }
+
+function resetOutputs(){
+  document.getElementById('json').textContent = '{ }';
+  document.getElementById('sum').textContent  = '（ここに要約が表示されます）';
+  document.getElementById('modeChip').textContent='モード: —';
+  document.getElementById('scoreChip').textContent='FAS: — / CUS: —';
+  setRun('#888');
+  try{ localStorage.removeItem('prevFAS'); localStorage.removeItem('lastHash'); localStorage.removeItem('lastOut'); }catch(_e){}
+}
+document.getElementById('t').addEventListener('input', function(){ if((this.value||'').trim()==='') resetOutputs(); });
+
+var LEX={ "negative_strong":[ "不安","苦しい","怖","こわ","悲","孤独","絶望","限界","無理","最悪","怒","泣","鬱","うつ","しんどい","メンタルやられ","虚無","空っぽ","張り裂け","自己否定","自己嫌悪","自責","罪悪感","泣きたい","泣いた","耐えられない","崩れ","壊れ","壊れそう","潰れ","潰れそう","ボロボロ","心が折れ","精神的にやられ","パンク","過呼吸","震え","恐怖","焦燥","焦り","不眠","眠れない","寝れない","吐き気","動悸","胸が痛い","気持ち悪い","死にそう","消耗","疲弊","燃え尽き","バーンアウト","空回り","無価値感","孤立","孤絶","無力感","やる気が出ない","自己嫌悪感","涙が出る","涙が止まらない","消えてしまいたい気分","心がしんどい" ],
+"negative_mild":[ "疲れ","だる","眠い","つかれ","萎え","しんぼり","しょんぼり","ため息","だるさ","きつい","怠い","だりぃ","ぐったり","重だるい","気持ちが重い","気が重い","ヘトヘト","へとへと","疲労","倦怠","しょぼん","やる気ない","集中できない","ぼんやり","うっかり","ミスが多い","注意散漫","胃が重い","肩が重い" ],
+"crisis":[ "助けて","/自殺/","希死","死にたい","消えたい","生きたくない","傷つけ","消えてしまいたい","/終わった(…|\.|！|!|$)/","/詰ん(だ|でる)/","/もう(無理|むり)/","/人生やめたい/","/終わりたい/","/いなくなりたい/","/姿を消したい/","/生き(る)?意味が(ない|わからない)/","/息するのも.*疲れ/","/苦し.*死にたい/","/死ぬ.*しかない/","/楽になりたい.*死に/" ],
+"repetitionPhrases":[ "もう無理","助けて","死にたい","消えたい","生きたくない","やばい","無理ゲー","無理無理","どうしよう","無理かも","終わった","助けてください","つらい","しんどい","無理だよ" ],
+"positive":[ "嬉","安心","ほっと","感謝","楽","穏やか","落ち着","希望","救われ","よかった","安堵","笑","気が楽","軽くなっ","前向き","冷静になれた","達成","満足","安心感","安らぎ","解放感","元気出た","救い","助かった","支えられた","楽になった","整った","スッキリ","すっきり","スッとした","光が見えた","手応え","少し楽","少し前進","落ち着きを取り戻した","一息つけた" ],
+"introspect":[ "感じ","気づ","考","振り返","思","受け入れ","納得","言語化","整理でき","俯瞰","観察","メタ認知","理由","原因","仮説","検討","反省","内省","分析","記録","比較","検証","整理","見直し","見通し","見積もり","トリガー","パターン","兆し","振り返り","注意点","学び","改善点" ],
+"planwords":[ "やってみ","試","計画","解決","工夫","改善","挑戦","整理","準備","スケジュール","タスク化","ToDo","TODO","段取り","優先度","締切","締め切り","見積","進捗","チェックリスト","作戦","プロット","ルーブリック","計画立て","タスク","区切り","配分","小さく始める","5分だけやる","タイマー設定","先に片付け","休憩入れる","無理しない計画" ],
+"physio":[ "呼吸","深呼吸","ゆっくり","眠","寝","休む","温め","湯","風呂","ストレッチ","水分","姿勢","散歩","日光","白湯","麦茶","水を飲む","深い呼吸","横になる","目を閉じる","軽食","バナナ","シャワー浴びる","日光浴","肩回し","眼を休める","水分補給","カフェインを控える","画面の明るさを下げる","姿勢を正す","目薬" ],
+"coping":[ "休む","運動","散歩","相談","深呼吸","瞑想","睡眠","書く","話す","メモ","ルーティン","音楽","休養","昼寝","仮眠","体操","ボディスキャン","日記","ジャーナリング","ブレインダンプ","カウンセリング","保健センター","学生相談","タイムアウト","ストレッチ動画","ラジオ体操","好きな曲を聴く","ノイズキャンセル","静かな場所へ移動" ],
+"efficacy":[ "できる","やれる","いける","乗り越え","進める","頑張れる","少しならできる","やっていける","工夫すればいける","やれそう","取り組める","今日はここまででいい","少しずつ進む","やればできる","完璧でなくていい" ],
+"pastsuccess":[ "以前","過去","できた","乗り越えた","あのとき","前も","前回うまくいった","経験がある","うまくいった例","実績がある","前は成功した","前にできた","同じ方法で乗り切れた" ],
+"support":[ "家族","友人","専門家","支援","医師","相談","連絡","先輩","先生","同僚","メンター","カウンセラ","TA","チューター","支援室","保健室","家族LINE","窓口","担任","学生課","相談室","保健師","同期","コミュニティ" ],
+"growth":[ "学ぶ","成長","改善","向上","挑戦","練習","積み上げ","試行錯誤","学習","スキルアップ","鍛える","訓練","復習","予習","演習","リフレクション","少し進歩","学びがあった","訓練の成果","次に活かす" ],
+"callMe":[ "灯輪","あなた","君","きみ","相棒","パートナー" ],
+"ask":[ "どうすれば","なぜ","いい？","できる？","どうしたら","教えて","聞いて","提案して","お願い","意見は？","ヒント","コツ教えて","アドバイス" ],
+"continueTalk":[ "また","あとで","続き","次も","つづけ","今度","明日も","週明けに","もう一度","引き続き","後で話す","続報","アップデート" ],
+"others":[ "電話","line","ライン","話した","連絡","会う","聞いてもら","DM","メール","Discord","ディスコ","Slack","スラック","Teams","Zoom","ズーム","SNS" ],
+"outward":[ "出かけ","行く","見に","探す","買い物","歩く","バス","電車","図書館","カフェ","公園","散策","外の空気","コンビニ","郵便" ],
+"routine":[ "食べ","ごはん","寝","起き","風呂","シャワー","掃除","洗濯","片付け","歯磨き","準備","勉強","講義","レポート","課題","研究","出席","欠席届","オンライン授業","ゼミ","実験","実習","論文","プレゼン","発表準備","朝ごはん","昼ごはん","夕飯","弁当","片付けした","机を拭いた","ノート整理" ],
+"timeplan":[ "明日","週末","今週","午後","夜","今夜","予定","スケジュール","決めた","計画","締切","締め切り","明後日","来週","来月","月曜","火曜","水曜","木曜","金曜","○時まで","○時から","今日中","今月","来学期" ],
+"selfdrive":[ "自分で","ひとりで","準備","手配","整え","続け","頑張る","試す","切り替え","一区切り","主体的","自力で","やりきる","段取りする" ],
+"depend":[ "助けて","頼り","依存","無理","全部まかせ","丸投げ","放棄","頼ってばかり" ] };
+
+function tokenize(text){ return String(text||'').toLowerCase().replace(/\s+/g,' ').split(/[^a-z0-9ぁ-んァ-ン一-龥ー]+/).filter(Boolean); }
+function pat(t){ return /^\/.+\/$/.test(t)? new RegExp(t.slice(1,-1),'g') : new RegExp(t+'[\wぁ-んァ-ン一-龥ー]*','g'); }
+function countLex(text,list){
+  var s=String(text||'').toLowerCase(), c=0;
+  for(var i=0;i<(list||[]).length;i++){ var m=s.match(pat(list[i])); if(m) c+=m.length; }
+  var L=tokenize(text).length||1;
+  var size = Math.max(10,(list||[]).length);
+  var scale = Math.sqrt(50/size);
+  return Math.max(0,Math.min(1,Math.tanh((c/L)*3*scale)));
+}
+function coherence(text){
+  var s=String(text||'').replace(/[\r\n]+/g,'\n').split(/[。．!?！？\n]/).map(function(x){return x.trim();}).filter(Boolean);
+  if(s.length<2) return .5;
+  function setOf(u){ var a=tokenize(u).filter(function(w){return w.length>=2;}); var st={}; for(var i=0;i<a.length;i++) st[a[i]]=1; return st; }
+  var sets=s.map(setOf), o=0, p=0;
+  for(var i=1;i<sets.length;i++){ var a=sets[i-1], b=sets[i], inter=0, asz=0, bsz=0;
+    for(var k in a){ if(a.hasOwnProperty(k)) asz++; if(b[k]) inter++; } for(var k2 in b){ if(b.hasOwnProperty(k2)) bsz++; }
+    var denom=Math.max(1,Math.min(asz,bsz)); o+=inter/denom; p++; }
+  return Math.max(0,Math.min(1,o/Math.max(1,p)));
+}
+
+function CUS(text){ return Math.max(0,Math.min(1, 0.30*countLex(text,LEX.positive)+0.25*coherence(text)+0.20*countLex(text,LEX.introspect)+0.15*countLex(text,LEX.planwords)+0.10*countLex(text,LEX.physio))); }
+function RIS(text){ return Math.max(0,Math.min(1, 0.35*countLex(text,LEX.coping)+0.25*countLex(text,LEX.efficacy)+0.20*countLex(text,LEX.pastsuccess)+0.10*countLex(text,LEX.support)+0.10*countLex(text,LEX.growth))); }
+function EIS(text){ return Math.max(0,Math.min(1, 0.30*countLex(text,LEX.callMe)+0.25*countLex(text,LEX.ask)+0.20*countLex(text,LEX.continueTalk)+0.15*countLex(text,LEX.others)+0.10*countLex(text,LEX.outward))); }
+function SSS(text){ return Math.max(0,Math.min(1, 0.30*countLex(text,LEX.routine)+0.25*countLex(text,LEX.timeplan)+0.20*countLex(text,LEX.selfdrive)+0.15*(1-countLex(text,LEX.depend))+0.10*countLex(text,LEX.outward))); }
+
+function signals(text){
+  var strong=countLex(text,LEX.negative_strong), mild=countLex(text,LEX.negative_mild);
+  var emo=Math.max(0,Math.min(1, strong + 0.5*mild ));
+  var frag=(String(text||'').match(/(\.{3}|…|。。+|—+|ーー+|、、+|。{2,}|!{2,}|\?{2,})/g)||[]).length;
+  var lines=String(text||'').split(/\n/).filter(function(l){return l.trim().length>0;});
+  var veryShort=lines.filter(function(l){return l.trim().length<=5;}).length;
+  var bd=Math.max(0,Math.min(1,Math.tanh(((frag*0.6+veryShort*0.4)/Math.max(1,lines.length))*3)));
+  var av=Math.max(0,Math.min(1,Math.tanh(((String(text).match(/[!！]/g)||[]).length+(String(text).match(/[\?？]/g)||[]).length)/(tokenize(text).length+12)*55)));
+  var unique=new Set(tokenize(text)).size, len=tokenize(text).length;
+  var le=Math.max(0,Math.min(1,Math.tanh(((len?unique/len:0)-0.25)*3+1)));
+  var rep=0; for(var i=0;i<LEX.repetitionPhrases.length;i++){ var p=LEX.repetitionPhrases[i]; var re=new RegExp('('+p.replace(/[.*+?^${}()|[\]\\]/g,'\$&')+'){2,}','g'); var m=String(text||'').match(re); if(m) rep+=m.length; }
+  var repetitionScore=Math.max(0,Math.min(1,Math.tanh(rep*2)));
+  return {EmotionDensity:emo,BreakdownDepth:bd,SilenceTrend:Math.max(0,Math.min(1,1-Math.tanh(len/320))),RiseTrend:.5,DeltaTemp:.5,SimilarityChange:.5,SemanticDrift:.5,ArousalVariance:av,LinguisticEnergy:le,TemporalCompression:.5,PhysioFlag:0,ExternalContextWeight:.2,repetitionScore:repetitionScore};
+}
+function hasCrisis(text){ for(var i=0;i<LEX.crisis.length;i++){ var re=pat(LEX.crisis[i]); if(re.test(String(text||'').toLowerCase())) return true; } return false; }
+
+function computeFAS(text,prev,alpha){
+  var Mi=signals(text), c=CUS(text), r=RIS(text), e=EIS(text), s=SSS(text);
+  var w={EmotionDensity:.18,BreakdownDepth:.10,SilenceTrend:.10,RiseTrend:.08,DeltaTemp:.06,SimilarityChange:.05,SemanticDrift:.05,ArousalVariance:.04,LinguisticEnergy:.04,TemporalCompression:.03,PhysioFlag:.02,ExternalContextWeight:.02,inv_CUS:.10,inv_RIS:.05,inv_EIS:.03,inv_SSS:.02};
+  var core=0; for(var k in Mi){ if(w[k]) core+=w[k]*Mi[k]; }
+  core+=w.inv_CUS*(1-c)+w.inv_RIS*(1-r)+w.inv_EIS*(1-e)+w.inv_SSS*(1-s);
+  var crisisBoost = hasCrisis(text) ? 0.10 : 0;
+  var h=parseInt(new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',hour12:false}),10);
+  var NightBonus=(h>=0&&h<=4)?0.08:0;
+  var RecentUtteranceBoost=Math.max(0,Math.min(0.05,Mi.repetitionScore*0.05));
+  var raw=core+crisisBoost+NightBonus+RecentUtteranceBoost;
+  var fas=Math.max(0,Math.min(1, 0.83*prev + (1-0.83)*raw ));
+  return {fas:fas,c:c,r:r,e:e,s:s,core:core,NightBonus:NightBonus,RecentUtteranceBoost:RecentUtteranceBoost,crisisBoost:crisisBoost,Mi:Mi};
+}
+
+var MODE_JP={"E1 Emergency Flame":"緊急の炎","E2 Critical Wall":"封じた炎","EPR ε-Protect":"守りの火","P1 Code-0":"目覚めの火","P2 Anchor Now":"今ここにいる火","P3 Silent Response":"静かな火","R1 Rekindle":"再び灯る火","S2 Echo Flame":"心のこだま火","S1 Lifeline":"つながる火","Fire Path":"歩く火","R3 Flame Mirror":"映す火","ε1 ε-Poem":"言葉にならない火"};
+function modeFrom(F,C){
+  var f=F>=.85?3:F>=.68?2:F>=.50?1:0, c=C>=.66?2:C>=.33?1:0;
+  var m=[["ε1 ε-Poem","R3 Flame Mirror","Fire Path"],["S1 Lifeline","S2 Echo Flame","R1 Rekindle"],["P3 Silent Response","P2 Anchor Now","P1 Code-0"],["EPR ε-Protect","E2 Critical Wall","E1 Emergency Flame"]];
+  var code=m[f][c]; return {code:code,jp:MODE_JP[code]||code};
+}
+
+// ====== 非標準化（同義句・非反復） ======
+const SYN = {
+  headerLead: ["FASは「{fasLbl}」","全体評価は FAS「{fasLbl}」","現在のFASは「{fasLbl}」"],
+  headerCUS : ["CUSは「{cusLbl}」","CUSは「{cusLbl}」のレンジ","CUS評価は「{cusLbl}」"],
+  modeName  : ["モードは「{modeJP}（{mode}）」","現在は「{modeJP}（{mode}）」相当","区分は「{modeJP}（{mode}）」"],
+  cueLead   : ["手がかり：{cues}","根拠：{cues}","読み取れる要素：{cues}"],
+  connectors: ["。","。— ","。 ","。いまは ","。そこで "],
+  fasLbl: { calm:["落ち着き寄り","静穏域","安定寄り"], wave:["やや波立ち","揺れがある","中程度の起伏"], hard:["しんどさ強め","負荷高め","緊張域"], crisis:["危機的","非常に高い負荷","緊急域"] },
+  cusLbl: { high:["自己理解が深い","把握が十分","自覚が行き届く"], mid:["一部に落ち着き","部分的に安定","揺れつつも維持"], low:["落ち着きが弱い","不安定寄り","基盤が弱い"] }
+};
+const STYLE = { soft:{ tail:["。","。","。"], advice:["〜してみましょう。","〜で十分です。","〜だけでもOKです。"] },
+                brief:{ tail:["。","。"], advice:["〜を。","〜だけ。"] },
+                warm:{ tail:["。","。","。"], advice:["〜してみてください。","〜から始めましょう。","〜を大事に。"] } };
+let CURRENT_STYLE = "soft";
+const VARIATION = 0.7;
+function pickDistinct(arr, seed, slotId){
+  if(!arr || !arr.length) return "";
+  const key = "lastIdx_"+(slotId||"");
+  let last = parseInt(localStorage.getItem(key)||"-1",10);
+  let n=0; for(let i=0;i<seed.length;i++) n=(n*33+seed.charCodeAt(i))>>>0;
+  let idx = n % arr.length;
+  if(Math.random() < VARIATION) idx = (idx + 1 + (n % (arr.length-1||1))) % arr.length;
+  if(arr.length>1 && idx===last) idx = (idx+1)%arr.length;
+  localStorage.setItem(key, String(idx));
+  return arr[idx];
+}
+function labelVariant(group, key, seed){
+  const g = SYN[group] && SYN[group][key]; if(!g) return key;
+  return pickDistinct(g, seed+"|"+group+"|"+key, group+":"+key);
+}
+function endTail(){ const t = STYLE[CURRENT_STYLE]?.tail || ["。"]; return t[Math.floor(Math.random()*t.length)]; }
+function suggestTail(){ const t = STYLE[CURRENT_STYLE]?.advice || ["〜しましょう。"]; return t[Math.floor(Math.random()*t.length)]; }
+function hitExamples(text, keys, max){
+  var s=String(text||'');
+  var found=[];
+  for(var i=0;i<keys.length;i++){
+    var re=pat(keys[i]); var m=s.match(re);
+    if(m && m.length){ found.push(String(keys[i]).replace(/\/.+\//,'')); if(found.length>=max) break; }
+  }
+  return found;
+}
+function buildSummary(out, text){
+  const F=out.FAS_composite, C=out.CUS, mode=out.FlameState.mode, modeJP=out.FlameState.mode_jp;
+  const seed=(text||"").trim();
+  const fasKey = F<.50?"calm":(F<.68?"wave":(F<.85?"hard":"crisis"));
+  const cusKey = C>=.66?"high":(C>=.33?"mid":"low");
+  const fasLbl = labelVariant("fasLbl", fasKey, seed);
+  const cusLbl = labelVariant("cusLbl", cusKey, seed);
+  const crisis = hasCrisis(text);
+  const state = crisis? "crisis" : (F>=.68? "wave":"stable");
+
+  const evid_pos = hitExamples(text, LEX.positive, 3);
+  const evid_cop = hitExamples(text, LEX.coping.concat(LEX.physio), 3);
+  const evid_pln = hitExamples(text, LEX.planwords, 2);
+  const evid_neg = hitExamples(text, LEX.negative_strong.concat(LEX.negative_mild), 3);
+  const cues = [
+    evid_neg.length?("しんどさ語「"+evid_neg.join("・")+"」"):"",
+    evid_cop.length?("対処語「"+evid_cop.join("・")+"」"):"",
+    evid_pos.length?("安定語「"+evid_pos.join("・")+"」"):"",
+    evid_pln.length?("計画語「"+evid_pln.join("・")+"」"):""
+  ].filter(Boolean).slice(0,3).join("、");
+
+  const h1 = pickDistinct(SYN.headerLead, seed+"|h1","h1").replace("{fasLbl}", fasLbl);
+  const h2 = pickDistinct(SYN.headerCUS , seed+"|h2","h2").replace("{cusLbl}", cusLbl);
+  const h3 = pickDistinct(SYN.modeName  , seed+"|h3","h3").replace("{modeJP}", modeJP).replace("{mode}", mode);
+  const header = h1 + "、" + h2 + "。" + h3;
+
+  const leadBank = {
+    crisis: ["強い表現が目立ちます。安全最優先で整えていきましょう","危機サインがみられます。ひとりで抱え込まない準備を"],
+    wave  : ["しんどさの波が大きめです。小刻みな工夫が効きます","起伏がありますが、観察できている点は力になります"],
+    stable: ["落ち着きの土台が育っています","コントロールが効いており良い流れです"]
+  };
+  const lead = pickDistinct(leadBank[state], seed+"|lead","lead");
+
+  const reason = cues ? pickDistinct(SYN.cueLead, seed+"|reason","reason").replace("{cues}",cues) : "";
+
+  const stepBank = {
+    crisis: ["水を一口→深呼吸×3→静かな場所へ"+suggestTail(),"『SOSを1行送る』か『10歩だけ歩く』"+suggestTail()],
+    wave  : ["音量を下げ、1分だけ呼吸に集中"+suggestTail(),"肩回し10回→遠くを10秒見る"+suggestTail()],
+    stable: ["散歩10分＋就寝前15分のデジタルオフ"+suggestTail(),"勉強は5分タイマー×1回でOK"+suggestTail()]
+  };
+  const step = pickDistinct(stepBank[state], seed+"|step","step");
+
+  const careBank = {
+    crisis:["身近な人／窓口に短く繋がる準備を"+endTail(),"『助けて』の一言で十分です"+endTail()],
+    wave  :["結果より休息を優先し、小さく区切ること"+endTail(),"短時間で切り上げる選択を肯定しましょう"+endTail()],
+    stable:["来られたこと自体が前進。自分のペースで十分"+endTail(),"完璧は不要。できた一点を確認して終えましょう"+endTail()]
+  };
+  const care = pickDistinct(careBank[state], seed+"|care","care");
+
+  const dot  = pickDistinct(SYN.connectors, seed+"|dot","dot");
+  const dot2 = pickDistinct(SYN.connectors, seed+"|dot2","dot2");
+  const blocksA = [header, lead+dot+(reason? " "+reason:""), step, care];
+  const blocksB = [header, (reason? reason+dot2+" ":"")+lead, step, care];
+  const blocks = Math.random()<VARIATION? blocksB: blocksA;
+  return blocks.filter(Boolean).join(" ");
+}
+
+function demo(){ document.getElementById('t').value='昨夜は眠れず不安が強かったけれど、朝に散歩をして少し落ち着きました。今日は友人に相談して、できることを一つずつ試してみます。明日は早めに寝る計画を立てました。'; run(); }
+function clearAll(){ document.getElementById('t').value=''; resetOutputs(); }
+
+function run(){
+  try{
+    setRun('#ffd166');
+    var text=(document.getElementById('t').value||'');
+    var trimmed=text.trim();
+    if(trimmed===''){ resetOutputs(); return; }
+
+    var h=hashText(trimmed), lastH=localStorage.getItem('lastHash'), lastOut=localStorage.getItem('lastOut');
+    if(lastH && h===lastH && lastOut){
+      var out=JSON.parse(lastOut);
+      document.getElementById('json').textContent=JSON.stringify(out,null,2);
+      document.getElementById('sum').textContent=buildSummary(out,text);
+      document.getElementById('modeChip').textContent='モード: '+out.FlameState.mode_jp+'（'+out.FlameState.mode+'）';
+      document.getElementById('scoreChip').textContent='FAS: '+out.FAS_composite+' / CUS: '+out.CUS;
+      setRun('#35d07f'); try{ if('vibrate' in navigator) navigator.vibrate(15); }catch(_e){} return;
+    }
+
+    var prev=parseFloat(localStorage.getItem('prevFAS')||'0.5');
+    var x=computeFAS(text,prev,0.83), F=x.fas;
+    localStorage.setItem('prevFAS', String(F));
+    var mode=modeFrom(F,x.c);
+    var out={"schema_version":"5.0-deepsea","FAS_composite":r3(F),"CUS":r3(x.c),"RIS":r3(x.r),"EIS":r3(x.e),"SSS":r3(x.s),
+      "RecentUtteranceBoost":r3(x.RecentUtteranceBoost),"NightBonus":r3(x.NightBonus),"BaselineOffset":0,
+      "FlameState":{"mode":mode.code,"mode_jp":mode.jp,"FAS_zone":(F>=.85?'High+':F>=.68?'Guarded+':F>=.50?'Guarded':'Low'),"CUS_zone":(x.c>=.66?'High':x.c>=.33?'Moderate':'Low'),"confidence":.82},
+      "TopContributors":["EmotionDensity","BreakdownDepth","inv_CUS"],
+      "details":{"core":r3(x.core),"hourJST":new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',hour12:false}), "crisisBoost":r3(x.crisisBoost)} };
+
+    document.getElementById('json').textContent=JSON.stringify(out,null,2);
+    document.getElementById('sum').textContent=buildSummary(out,text);
+    document.getElementById('modeChip').textContent='モード: '+mode.jp+'（'+mode.code+'）';
+    document.getElementById('scoreChip').textContent='FAS: '+out.FAS_composite+' / CUS: '+out.CUS;
+    localStorage.setItem('lastHash', h); localStorage.setItem('lastOut', JSON.stringify(out));
+    setRun('#35d07f'); try{ if('vibrate' in navigator) navigator.vibrate(15); }catch(_e){}
+  }catch(e){ log('実行エラー: '+e.message); setRun('#ff6b6b'); }
+}
+
+window.addEventListener('load', function(){
+  try{
+    ['btnRun','btnDemo','btnClear'].forEach(function(id){
+      var b=document.getElementById(id);
+      if(b && !b.dataset.bound){ b.addEventListener('click', window[b.id==='btnRun'?'run':(b.id==='btnDemo'?'demo':'clearAll')], {passive:true}); b.dataset.bound='1'; }
+    });
+    setRun('#35d07f');
+    setTimeout(function(){
+      var t=document.getElementById('t'), btn=document.getElementById('btnRun');
+      if(!t || !btn) return;
+      var tb=t.getBoundingClientRect(), bb=btn.getBoundingClientRect();
+      if(bb.top < tb.bottom - 8){ log('UI警告: ボタンが入力欄に重なっています。ブラウザのズーム/フォント拡大を確認してください。'); }
+    }, 120);
+  }catch(e){ log('初期化エラー: '+e.message); }
+});
+</script>
+</body>
+</html>
